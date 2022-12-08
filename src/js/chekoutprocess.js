@@ -1,95 +1,119 @@
-import { getLocalStorage } from "./utils.js";
-// eslint-disable-next-line import/no-unresolved
-import ExternalServices from "./ExternalServices.js";
+// This is your test publishable API key.
+const stripe = Stripe("pk_test_51MCRR5DI8L5raowjnvNULqzyymzLaekDrqHmhmVqWQQnQB8QvRLypnSLMd3qdNbmwqcb3SZPm5kpMUOqn7cq8DEl00eprZ8oYN");
 
-const services = new ExternalServices();
-function formDataToJSON(formElement) {
-  const formData = new FormData(formElement),
-    convertedJSON = {};
+// The items the customer wants to buy
+const items = [{ id: "xl-tshirt" }];
 
-  formData.forEach(function (value, key) {
-    convertedJSON[key] = value;
+let elements;
+
+initialize();
+checkStatus();
+
+document
+  .querySelector("#payment-form")
+  .addEventListener("submit", handleSubmit);
+
+// Fetches a payment intent and captures the client secret
+async function initialize() {
+  const response = await fetch("/create-payment-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+  });
+  const { clientSecret } = await response.json();
+
+  const appearance = {
+    theme: 'stripe',
+  };
+  elements = stripe.elements({ appearance, clientSecret });
+
+  const paymentElementOptions = {
+    layout: "tabs",
+  };
+
+  const paymentElement = elements.create("payment", paymentElementOptions);
+  paymentElement.mount("#payment-element");
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  setLoading(true);
+
+  const { error } = await stripe.confirmPayment({
+    elements,
+    confirmParams: {
+      // Make sure to change this to your payment completion page
+      return_url: "http://localhost:4242/checkout.html",
+    },
   });
 
-  return convertedJSON;
+  // This point will only be reached if there is an immediate error when
+  // confirming the payment. Otherwise, your customer will be redirected to
+  // your `return_url`. For some payment methods like iDEAL, your customer will
+  // be redirected to an intermediate site first to authorize the payment, then
+  // redirected to the `return_url`.
+  if (error.type === "card_error" || error.type === "validation_error") {
+    showMessage(error.message);
+  } else {
+    showMessage("An unexpected error occurred.");
+  }
+
+  setLoading(false);
 }
 
-function packageItems(items) {
-  const simplifiedItems = items.map((item) => {
-    console.log(item);
-    return {
-      id: item.Id,
-      price: item.FinalPrice,
-      name: item.Name,
-      quantity: 1,
-    };
-  });
-  return simplifiedItems;
+// Fetches the payment intent status after payment submission
+async function checkStatus() {
+  const clientSecret = new URLSearchParams(window.location.search).get(
+    "payment_intent_client_secret"
+  );
+
+  if (!clientSecret) {
+    return;
+  }
+
+  const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+  switch (paymentIntent.status) {
+    case "succeeded":
+      showMessage("Payment succeeded!");
+      break;
+    case "processing":
+      showMessage("Your payment is processing.");
+      break;
+    case "requires_payment_method":
+      showMessage("Your payment was not successful, please try again.");
+      break;
+    default:
+      showMessage("Something went wrong.");
+      break;
+  }
 }
 
-export default class CheckoutProcess {
-  constructor(key, outputSelector) {
-    this.key = key;
-    this.outputSelector = outputSelector;
-    this.list = [];
-    this.itemTotal = 0;
-    this.shipping = 0;
-    this.tax = 0;
-    this.orderTotal = 0;
-  }
-  init() {
-    this.list = getLocalStorage(this.key);
-    this.calculateItemSummary();
-  }
-  calculateItemSummary() {
-    const summaryElement = document.querySelector(
-      this.outputSelector + " #cartTotal"
-    );
-    const itemNumElement = document.querySelector(
-      this.outputSelector + " #num-items"
-    );
-    itemNumElement.innerText = this.list.length;
-    // calculate the total of all the items in the cart
-    const amounts = this.list.map((item) => item.FinalPrice);
-    this.itemTotal = amounts.reduce((sum, item) => sum + item);
-    summaryElement.innerText = "$" + this.itemTotal;
-  }
-  calculateOrdertotal() {
-    this.shipping = 10 + (this.list.length - 1) * 2;
-    this.tax = (this.itemTotal * 0.06).toFixed(2);
-    this.orderTotal = (
-      parseFloat(this.itemTotal) +
-      parseFloat(this.shipping) +
-      parseFloat(this.tax)
-    ).toFixed(2);
-    this.displayOrderTotals();
-  }
-  displayOrderTotals() {
-    const shipping = document.querySelector(this.outputSelector + " #shipping");
-    const tax = document.querySelector(this.outputSelector + " #tax");
-    const orderTotal = document.querySelector(
-      this.outputSelector + " #orderTotal"
-    );
-    shipping.innerText = "$" + this.shipping;
-    tax.innerText = "$" + this.tax;
-    orderTotal.innerText = "$" + this.orderTotal;
-  }
-  async checkout() {
-    const formElement = document.forms["checkout"];
+// ------- UI helpers -------
 
-    const json = formDataToJSON(formElement);
-    // add totals, and item details
-    json.orderDate = new Date();
-    json.orderTotal = this.orderTotal;
-    json.tax = this.tax;
-    json.shipping = this.shipping;
-    json.items = packageItems(this.list);
-    console.log(json);
-    try {
-      const res = await services.checkout(json);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
+function showMessage(messageText) {
+  const messageContainer = document.querySelector("#payment-message");
+
+  messageContainer.classList.remove("hidden");
+  messageContainer.textContent = messageText;
+
+  setTimeout(function () {
+    messageContainer.classList.add("hidden");
+    messageText.textContent = "";
+  }, 4000);
+}
+
+// Show a spinner on payment submission
+function setLoading(isLoading) {
+  if (isLoading) {
+    // Disable the button and show a spinner
+    document.querySelector("#submit").disabled = true;
+    document.querySelector("#spinner").classList.remove("hidden");
+    document.querySelector("#button-text").classList.add("hidden");
+  } else {
+    document.querySelector("#submit").disabled = false;
+    document.querySelector("#spinner").classList.add("hidden");
+    document.querySelector("#button-text").classList.remove("hidden");
   }
 }
+
