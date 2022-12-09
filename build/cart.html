@@ -76,6 +76,48 @@
           </li> -->
         </ul>
       </section>
+      <form method="get" action="thankyou.html">
+        <fieldset class="app-info">
+            <legend>Application Form</legend>
+                <label for="fname" class="app">First Name*
+                    <input type="text" id="fname" required placeholder="Enter your first name">
+                </label>
+                <label for="lname" class="app">Last Name*
+                    <input type="text" id="lname" required placeholder="Enter your last name">
+                </label>
+                <label for="business" class="app">Business Position:
+                    <input type="text" id="business" pattern="[A-Za-z - ]{7,}">
+                </label>
+                <lable for="email" class="app">Email*
+                    <input type="email" id="email" required placeholder="email@email.com">
+                </lable>
+                <lable for="phone" class="app">Phone*
+                    <input type="tel" id="phone" required placeholder="123-456-7890">
+                </lable>
+                <label for="title" class="app">Business Name*
+                    <input type="text" id="btitle" required placeholder="Company">
+                </label>
+        </fieldset>
+        <fieldset class="member-lvl">
+            <legend>Membership<em>(Choose One)</em></legend>
+                <label for="Npmbr" class="sbs"></label>
+                    <input type="radio" id="Npmbr" name="Membership Level" value="NPmbr">NP Membership<br>
+                <label for="Bronzembr" class="sbs"></label>
+                    <input type="radio" id="Bronzembr" name="Membership Level" value="Bronzembr">Bronze Membership<br>
+                <label for="Silvermbr" class="sbs"></label>
+                    <input type="radio" id="Silvermbr" name="Membership Level" value="Silvermbr">Silver Membership<br>
+                <label for="Goldmbr" class="sbs"></label>
+                    <input type="radio" id="Goldmbr" name="Membership Level" value="Goldmbr">Gold Membership<br>
+        </fieldset>
+        <fieldset class="disc">
+            <legend>Business Description</legend>
+            <label for="Bdescription"></label>
+            <textarea id="txtid" name="Business Description" rows="10" cols="42" maxlength="500"></textarea>
+        </fieldset>
+        <input type="hidden" id="date" name="date" value="CurrentTime">
+        <input type="hidden" id="time" name="time" value="CurrentTime">
+        <input type="submit" value="Join Community" class="submitBtn">
+    </form>
     </main>
     <footer>©NOT a real business</footer>
     <script src="js/cart.js"></script>
