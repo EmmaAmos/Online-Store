@@ -6,7 +6,7 @@
     <title>Online Store | Cart</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body class="page-cart">
     <header class="divider">
       <div class="logo">
         <img src="images/groceryIcon.jpg" alt="basket image for logo" />
@@ -41,16 +41,9 @@
       </div>
     </header>
     <main class="divider">
-      <h2 class="section-header">CART</h2>
-            <div class="cart-row">
-                <span class="cart-item cart-header cart-column">ITEM</span>
-                <span class="cart-price cart-header cart-column">PRICE</span>
-                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-            </div>
             <section class="container content-section">
-              <h2 class="section-header">MUSIC</h2>
-              <div class="shop-items">
-                  <div class="shop-item">
+              <div class="shop-items product-list">
+                  <div class="shop-item product-card">
                       <span class="shop-item-title">Frozen Mixed Veggies</span>
                       <img class="shop-item-image" src="images/products/mixedVeg.webp">
                       <div class="shop-item-details">
@@ -58,32 +51,38 @@
                           <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
                       </div>
                   </div>
-                  <div class="shop-item">
-                      <span class="shop-item-title">Album 2</span>
-                      <img class="shop-item-image" src="Images/Album 2.png">
+                  <div class="shop-item product-card">
+                      <span class="shop-item-title">3 Pack Chicken Brests</span>
+                      <img class="shop-item-image" src="images/products/chic_brest.webp">
                       <div class="shop-item-details">
-                          <span class="shop-item-price">$14.99</span>
+                          <span class="shop-item-price">$19.99</span>
                           <button class="btn btn-primary shop-item-button"type="button">ADD TO CART</button>
                       </div>
                   </div>
-                  <div class="shop-item">
-                      <span class="shop-item-title">Album 3</span>
-                      <img class="shop-item-image" src="Images/Album 3.png">
+                  <div class="shop-item product-card">
+                      <span class="shop-item-title">Elegent Fruit Basket</span>
+                      <img class="shop-item-image" src="images/products/fruiteHBasket.jpg">
                       <div class="shop-item-details">
                           <span class="shop-item-price">$9.99</span>
                           <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
                       </div>
                   </div>
-                  <div class="shop-item">
-                      <span class="shop-item-title">Album 4</span>
-                      <img class="shop-item-image" src="Images/Album 4.png">
+                  <div class="shop-item product-card">
+                      <span class="shop-item-title">Plasticware</span>
+                      <img class="shop-item-image" src="images/products/plasticWare.png">
                       <div class="shop-item-details">
-                          <span class="shop-item-price">$19.99</span>
+                          <span class="shop-item-price">$30.00</span>
                           <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
                       </div>
                   </div>
               </div>
           </section>
+          <h2 class="section-header">CART</h2>
+          <div class="cart-row">
+              <span class="cart-item cart-header cart-column">ITEM</span>
+              <span class="cart-price cart-header cart-column">PRICE</span>
+              <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+          </div>
             <div class="cart-items">
                 <div class="cart-row">
                     <div class="cart-item cart-column">
@@ -114,7 +113,7 @@
             </div>
             <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
       </section>
-      <form method="get" action="thankyou.html">
+      <!-- <form method="get" action="thankyou.html">
         <fieldset class="app-info">
             <legend>Application Form</legend>
                 <label for="fname" class="app">First Name*
@@ -155,7 +154,7 @@
         <input type="hidden" id="date" name="date" value="CurrentTime">
         <input type="hidden" id="time" name="time" value="CurrentTime">
         <input type="submit" value="Join Community" class="submitBtn">
-    </form>
+    </form> -->
     </main>
     <footer>©NOT a real business</footer>
     <script src="js/cart.js"></script>

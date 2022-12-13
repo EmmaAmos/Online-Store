@@ -140,6 +140,12 @@ button {
   border: 1px solid var(--light-grey);
   max-width: 250px;
 }
+
+.page-cart .product-card {
+  display: grid;
+  grid-template-columns: 25% auto 15%;
+}
+
 .product-card h2,
 .product-card h3,
 .product-card p {
